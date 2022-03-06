@@ -1,0 +1,29 @@
+image: condaforge/mambaforge:latest
+
+stages:
+  - test
+  - deploy
+
+before_script:
+  - mamba install jupyter-book
+  - jb build docs
+
+test:
+  stage: test
+  except:
+  - main
+  script:
+  - echo "Nothing to do"
+
+pages:
+  stage: deploy
+  only:
+  - main
+  script:
+  - mv docs/_build/html public
+  - apt update -qq && apt install brotli -y
+  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec gzip   -f -k {} \; || echo 'Gzip failed. Skipping...'
+  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec brotli -f -k {} \; || echo 'Brotli failed. Skipping...'
+  artifacts:
+    paths:
+    - public
