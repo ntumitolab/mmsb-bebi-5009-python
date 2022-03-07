@@ -4,16 +4,17 @@
 format: jb-book
 root: index
 parts:
-- caption: Python notebooks
-  chapters:
-  - file: tutorial
-  - file: numpy
-  - file: plot
-  - file: ode
-  - file: random-walk
-  - file: ssa
-  - file: pandas
-  - file: textbook
-  - file: metanet/cobra_2020_part1
-    sections:
-    - file: metanet/cobra_2020_part2
+  - caption: Python notebooks
+    chapters:
+      - file: tutorial
+      - file: numpy
+      - file: plot
+      - file: ode
+      - file: random-walk
+      - file: ssa
+      - file: pandas
+      - file: textbook
+  - caption: Metabolic network
+    chapters:
+      - file: metanet/cobra_2020_part1
+      - file: metanet/cobra_2020_part2
