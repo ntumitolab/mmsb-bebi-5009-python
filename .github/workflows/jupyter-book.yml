@@ -1,7 +1,7 @@
 name: Build pages
 
 env:
-  PYTHON_VERSION: "3.9"
+  PYTHON_VERSION: "3.8"
 
 on: [push, pull_request]
 
@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}
       - name: Build website
-        run: jupyter-book build --warningiserror --keep-going -v docs
+        run: jupyter-book build --warningiserror --keep-going docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.8.0
         if: github.ref == 'refs/heads/main'
