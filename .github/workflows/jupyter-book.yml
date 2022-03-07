@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}
       - name: Build website
-        run: jupyter-book build --warningiserror --keep-going --all docs
+        run: jupyter-book build --warningiserror --keep-going -v docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.8.0
         if: github.ref == 'refs/heads/main'
