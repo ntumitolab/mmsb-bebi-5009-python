@@ -1,29 +1,52 @@
-image: condaforge/mambaforge:latest
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 stages:
-  - test
+  - build
   - deploy
 
-before_script:
-  - mamba install jupyter-book
-  - jb build docs
-
-test:
-  stage: test
-  except:
-  - main
+build-website:
+  image: python:3.8-slim
+  tags:
+    - md705
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+  cache:
+    - key:
+        files:
+          - requirements.txt
+      paths:
+      - venv/
+      - .cache/pip/
+      - docs/_build/.jupyter_cache
   script:
-  - echo "Nothing to do"
+    - pip install -U pip setuptools wheel
+    - python -m venv venv/
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - jupyter-book build docs
+  artifacts:
+    paths:
+      - docs/_build/
+    expire_in: 1 day
 
 pages:
   stage: deploy
-  only:
-  - main
+  image: alpine:3.15
+  needs: ["build-website"]
+  cache: []
+  variables:
+    GIT_STRATEGY: none
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
   script:
-  - mv docs/_build/html public
-  - apt update -qq && apt install brotli -y
-  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec gzip   -f -k {} \; || echo 'Gzip failed. Skipping...'
-  - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec brotli -f -k {} \; || echo 'Brotli failed. Skipping...'
+    - mv docs/_build/html public
+    - apk add --no-cache brotli gzip
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec gzip   -f -k {} \; || echo 'Gzip failed. Skipping...'
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|svg\|xml\)$' -exec brotli -f -k {} \; || echo 'Brotli failed. Skipping...'
   artifacts:
     paths:
-    - public
+      - public
+
+
