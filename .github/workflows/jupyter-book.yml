@@ -3,7 +3,13 @@ name: Build pages
 env:
   PYTHON_VERSION: "3.8"
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -26,14 +32,14 @@ jobs:
       - name: Cache Jupyter book outputs
         uses: actions/cache@v2
         env:
-          cache-name: "jb-01"
+          cache-name: "jb"
         with:
           path: ./docs/_build/.jupyter_cache/
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('**/*.ipynb') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}
       - name: Build website
-        run: jupyter-book build --keep-going docs
+        run: jupyter-book build docs
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3.8.0
         if: github.ref == 'refs/heads/main'
