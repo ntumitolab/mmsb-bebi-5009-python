@@ -6,7 +6,7 @@ stages:
   - deploy
 
 build-website:
-  image: python:3.8-slim
+  image: python:3.10-slim
   tags:
     - md705
   stage: build
