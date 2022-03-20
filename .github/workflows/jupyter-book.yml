@@ -5,11 +5,9 @@ env:
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [main]
+  pull_request: 
+    branches: [main]
 
 jobs:
   build:
@@ -27,12 +25,12 @@ jobs:
         uses: syphar/restore-pip-download-cache@v1
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Install Python dependencies if cache miss
-        run: pip install -r requirements.txt -r .github/requirements.txt
+        run: pip install -r requirements.txt
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Cache Jupyter book outputs
         uses: actions/cache@v2
         env:
-          cache-name: "jb"
+          cache-name: "jb-01"
         with:
           path: ./docs/_build/.jupyter_cache/
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('**/*.ipynb') }}
