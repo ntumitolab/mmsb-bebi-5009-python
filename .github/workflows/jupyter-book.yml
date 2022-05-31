@@ -28,7 +28,7 @@ jobs:
         run: pip install -r requirements.txt
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Cache Jupyter book outputs
-        uses: actions/cache@v3.0.2
+        uses: actions/cache@v3.0.3
         env:
           cache-name: "jb-01"
         with:
