@@ -67,7 +67,7 @@ jobs:
       - name: Push Docker Image
         # Do not push on PR's
         if: github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           file: .ci/Dockerfile
