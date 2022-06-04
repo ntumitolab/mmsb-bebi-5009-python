@@ -14,7 +14,3 @@ parts:
       - file: ssa
       - file: pandas
       - file: textbook
-  - caption: Metabolic network
-    chapters:
-      - file: metanet/cobra_2020_part1
-      - file: metanet/cobra_2020_part2
