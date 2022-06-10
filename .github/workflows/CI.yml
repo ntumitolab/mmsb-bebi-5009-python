@@ -33,9 +33,16 @@ jobs:
         run: |
           pip install -r requirements.txt -r .ci/requirements.txt
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-
-      - name: Execute Notebooks
-        run: find docs -type f -name "*.ipynb" -print0 | parallel -0 -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=600 --execute --allow-errors --inplace {}
+      - name: Cache Jupyter book outputs
+        uses: actions/cache@v3
+        env:
+          cache-name: "jb"
+        with:
+          path: docs/_build/.jupyter_cache
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('docs/**/*.md', 'docs/**/*.ipynb') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
+            ${{ runner.os }}-${{ env.cache-name }}-
       - name: Build website
         run: jupyter-book build docs -v
 
