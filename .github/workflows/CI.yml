@@ -21,7 +21,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: docker/setup-buildx-action@v2
       - name: Build Docker Image
-        # if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -32,6 +31,8 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Execute notebooks
         run: docker run -v ${{ github.workspace }}:/work ${{ env.IMAGE_NAME }}:test find /work/docs/ -type f -name "*.ipynb" -print0 | parallel -0 -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=600 --execute --inplace {}
+      - name: Build website
+        run: jupyter-book build docs/ -v
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3.8.0
         if: github.ref == 'refs/heads/main'
