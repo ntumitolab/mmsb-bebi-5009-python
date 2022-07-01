@@ -8,12 +8,9 @@ ENV LC_ALL C.UTF-8
 # system
 RUN apt-get update && apt-get install -y build-essential git gzip brotli parallel --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# jupyter-book
+# jupyter-book and python deps
 COPY .ci/requirements.txt .ci/requirements.txt
-RUN pip install --no-cache-dir -r .ci/requirements.txt
-
-# Python deps
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r .ci/requirements.txt -r requirements.txt
 
 CMD ["jupyter-book"]
