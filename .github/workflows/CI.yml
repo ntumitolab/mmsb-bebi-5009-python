@@ -31,7 +31,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Execute notebooks
-        run: docker run -v ${{ github.workspace }}:/work ${{ env.IMAGE_NAME }}:test find docs/ -type f -name "*.ipynb" -print0 | parallel -0 -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=600 --execute --inplace {}
+        run: docker run -v ${{ github.workspace }}:/work ${{ env.IMAGE_NAME }}:test find /work/docs/ -type f -name "*.ipynb" -print0 | parallel -0 -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=600 --execute --inplace {}
       - name: Deploy Website
         uses: peaceiris/actions-gh-pages@v3.8.0
         if: github.ref == 'refs/heads/main'
