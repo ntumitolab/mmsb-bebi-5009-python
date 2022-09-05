@@ -28,11 +28,10 @@ jobs:
       - name: Install Python dependencies
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f .ci/requirements.txt ]; then pip install -r .ci/requirements.txt; fi
       - name: Cache JupyterBook
         uses: actions/cache@v3
         with:
-          path: ./docs/_build/.jupyter_cache/
+          path: docs/_build/.jupyter_cache/
           key: ${{ runner.os }}-jb-${{ hashFiles('**/requirements.txt') }}
       - name: Build website
         run: jupyter-book build docs/ -v --warningiserror --keep-going
