@@ -34,7 +34,7 @@ jobs:
         with:
           path: docs/_build/.jupyter_cache
           key: ${{ runner.os }}-jb-${{ env.PYTHON_VER }}-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/*.ipynb') }}
-          restore_keys: |
+          restore-keys: |
             ${{ runner.os }}-jb-${{ env.PYTHON_VER }}-${{ hashFiles('**/requirements.txt') }}-
       - name: Build website
         run: jupyter-book build docs --keep-going -v
