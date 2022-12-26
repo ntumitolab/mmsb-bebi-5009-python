@@ -11,38 +11,41 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: '3.10'
+  PYTHON_VER: '3.11'
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Setup Python ${{ env.PYTHON_VERSION }}
+      - name: Setup Python ${{ env.PYTHON_VER }}
         uses: actions/setup-python@v4
+        id: python
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ env.PYTHON_VER }}
           cache: 'pip'
-          cache-dependency-path: '**/requirements.txt'
       - name: Install Python dependencies
         run: pip install -r requirements.txt
-      - name: Run Notebooks
-        run: |
-          parallel -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=600 --execute --inplace {} ::: docs/*.ipynb
+      - name: Cache Jupyter Book output
+        uses: actions/cache@v3
+        with:
+          path: docs/_build/.jupyter_cache
+          key: ${{ runner.os }}-jb-$${{ hashFiles('**/Manifest.toml') }}
       - name: Build website
-        run: jupyter-book build docs -v --warningiserror --keep-going
+        run: jupyter-book build docs --keep-going -v
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
-      - name: Upload artifact
+      - name: Upload page artifact
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./docs/_build/html
+          path: docs/_build/html
 
   # Deployment job
   deploy:
-    needs: build
+    needs: ci
     if: github.ref == 'refs/heads/main'
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
