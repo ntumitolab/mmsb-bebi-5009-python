@@ -3,4 +3,3 @@ scipy==1.10.0
 pandas==1.5.2
 seaborn==0.12.2
 jupyter-book==0.13.1
-ipython==8.8.0
