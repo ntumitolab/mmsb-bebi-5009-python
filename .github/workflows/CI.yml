@@ -38,7 +38,7 @@ jobs:
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Run notebooks
         run: |
-          parallel --joblog /tmp/log -j1 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} --execute --inplace {} ::: docs/*.ipynb
+          parallel --joblog /tmp/log -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} --execute --inplace {} ::: docs/*.ipynb
           cat /tmp/log
       - name: Build website
         run: jupyter-book build docs/ --keep-going -v
