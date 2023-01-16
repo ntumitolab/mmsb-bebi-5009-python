@@ -12,7 +12,7 @@ concurrency:
 
 env:
   PYTHON_VER: '3.11'
-  TIMEOUT: '600'
+  TIMEOUT: 600
 
 jobs:
   ci:
@@ -41,7 +41,12 @@ jobs:
           parallel --joblog /tmp/log -j2 jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} --execute --inplace {} ::: docs/*.ipynb
           cat /tmp/log
       - name: Build website
-        run: jupyter-book build docs/ --keep-going -v
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sosiristseng/docker-jupyterbook:0.13
+          options: -v ${{ github.workspace }}:/work
+          run: |
+            jupyter-book build /work/docs/ --keep-going -v
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v2
