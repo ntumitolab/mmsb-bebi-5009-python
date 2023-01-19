@@ -13,11 +13,11 @@ concurrency:
 env:
   PYTHON_VER: '3.11'
   TIMEOUT: 600
-  JOBS: 8
+  JOBS: 2
 
 jobs:
   ci:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -26,8 +26,17 @@ jobs:
         id: python
         with:
           python-version: ${{ env.PYTHON_VER }}
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          requirement_files: requirements.txt  # this is optional
+      - uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+        # the package installation will only be executed when the
+        # requirements-files have changed.
       - name: Install Python dependencies
         run: pip install -r requirements.txt
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Run notebooks
         run: |
           parallel --joblog /tmp/log -j${JOBS} jupyter nbconvert --to notebook \
@@ -36,7 +45,12 @@ jobs:
             {} ::: docs/*.ipynb
           cat /tmp/log
       - name: Build website
-        run: jupyter-book build docs/ --keep-going -v
+        uses: addnab/docker-run-action@v3
+        with:
+          image: sosiristseng/docker-jupyterbook:0.13
+          options: -v ${{ github.workspace }}:/work
+          run: |
+            jupyter-book build /work/docs/ --keep-going -v
       - name: Upload page artifact
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v1
