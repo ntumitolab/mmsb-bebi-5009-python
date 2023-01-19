@@ -39,7 +39,10 @@ jobs:
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Run notebooks
         run: |
-          parallel --joblog /tmp/log -j${JOBS} jupyter nbconvert --to notebook --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} --execute --inplace {} ::: docs/*.ipynb
+          parallel --joblog /tmp/log -j${JOBS} jupyter nbconvert --to notebook \
+            --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} \
+            --execute --inplace \
+            {} ::: docs/*.ipynb
           cat /tmp/log
       - name: Build website
         uses: addnab/docker-run-action@v3
