@@ -12,8 +12,6 @@ concurrency:
 
 env:
   PYTHON_VER: '3.11'
-  TIMEOUT: 600
-  JOBS: 2
 
 jobs:
   ci:
@@ -37,13 +35,6 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-      - name: Run notebooks
-        run: |
-          parallel --joblog /tmp/log -j${JOBS} jupyter nbconvert --to notebook \
-            --ExecutePreprocessor.timeout=${{ env.TIMEOUT }} \
-            --execute --inplace \
-            {} ::: docs/*.ipynb
-          cat /tmp/log
       - name: Build website
         run: jupyter-book build docs/ --keep-going
       - name: Upload page artifact
