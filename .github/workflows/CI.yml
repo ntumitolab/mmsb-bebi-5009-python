@@ -45,12 +45,7 @@ jobs:
             {} ::: docs/*.ipynb
           cat /tmp/log
       - name: Build website
-        run: >
-          docker run
-          -w /work
-          -v ${{ github.workspace }}:/work
-          ghcr.io/sosiristseng/docker-jupyterbook:latest
-          jupyter-book build docs/ --keep-going
+        run: jupyter-book build docs/ --keep-going
       - name: Upload page artifact
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/upload-pages-artifact@v1
