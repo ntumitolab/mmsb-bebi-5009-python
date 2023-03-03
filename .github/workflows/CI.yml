@@ -12,6 +12,7 @@ concurrency:
 
 env:
   PYTHON_VER: '3.11'
+  PYDEVD_DISABLE_FILE_VALIDATION: 1
 
 jobs:
   ci:
@@ -24,17 +25,9 @@ jobs:
         id: python
         with:
           python-version: ${{ env.PYTHON_VER }}
-      - uses: syphar/restore-virtualenv@v1
-        id: cache-virtualenv
-        with:
-          requirement_files: requirements.txt  # this is optional
-      - uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-        # the package installation will only be executed when the
-        # requirements-files have changed.
+          cache: 'pip'
       - name: Install Python dependencies
         run: pip install -r requirements.txt
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
       - name: Build website
         run: jupyter-book build docs/ --keep-going
       - name: Upload page artifact
