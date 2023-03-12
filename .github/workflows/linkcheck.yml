@@ -7,7 +7,6 @@ on:
 
 env:
   PYTHON_VER: '3.11'
-  TIMEOUT: 600
 
 jobs:
   linkcheck:
@@ -20,17 +19,8 @@ jobs:
         id: python
         with:
           python-version: ${{ env.PYTHON_VER }}
-      - uses: syphar/restore-virtualenv@v1
-        id: cache-virtualenv
-        with:
-          requirement_files: requirements.txt  # this is optional
-      - uses: syphar/restore-pip-download-cache@v1
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
-        # the package installation will only be executed when the
-        # requirements-files have changed.
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+      - name: Setup Jupyter book
+        run: pip install jupyter-book
       - name: Disable code cell execution
         uses: mikefarah/yq@master
         with:
