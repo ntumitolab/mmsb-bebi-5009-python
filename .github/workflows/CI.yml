@@ -23,9 +23,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           python-version: ${{ env.PYTHON_VER }}
-          mamba-version: "*"
-          channels: conda-forge,defaults
-          channel-priority: true
+          miniforge-variant: Mambaforge
           environment-file: environment.yml
       - name: Build website
         shell: bash -el {0}
