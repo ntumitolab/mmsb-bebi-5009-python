@@ -4,26 +4,24 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 1 * *' # Every month
-
-env:
-  PYTHON_VER: '3.11'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/linkcheck.yml'
 
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sosiristseng/docker-jupyterbook:0.15.1.1
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Python ${{ env.PYTHON_VER }}
-        uses: actions/setup-python@v4
-        id: python
-        with:
-          python-version: ${{ env.PYTHON_VER }}
-      - name: Setup Jupyter book
-        run: pip install jupyter-book
       - name: Disable code cell execution
         uses: mikefarah/yq@master
         with:
           cmd: yq -i '.execute.execute_notebooks = "off"' 'docs/_config.yml'
-      - name: Check Links
+      - name: Install Jupyter book and check links
         run: jupyter-book build docs/ --builder linkcheck
+
