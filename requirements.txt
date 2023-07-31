@@ -1,6 +1,6 @@
 scipy==1.11.1
 pandas==2.0.3
-numpy==1.25.1
+numpy==1.25.2
 jupyter-book==0.15.1
 matplotlib==3.7.2
 ipykernel==6.25.0
