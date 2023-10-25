@@ -3,4 +3,4 @@ pandas==2.1.1
 numpy==1.26.1
 jupyter-book==0.15.1
 matplotlib==3.8.0
-ipykernel==6.25.2
+ipykernel==6.26.0
