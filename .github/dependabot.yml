@@ -13,8 +13,3 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    groups:
-      py-dependencies:
-        applies-to: "version-updates"
-        patterns:
-          - "*"
